@@ -9,7 +9,9 @@
 
 ## Azure
 
-Azure Storage Emulator
+* [Windows only Azure Storage Emulator](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
+* [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/)
+* [Azurite -Azure Emulator on Linux](https://github.com/azure/azurite)  
 
 ## GCP
 

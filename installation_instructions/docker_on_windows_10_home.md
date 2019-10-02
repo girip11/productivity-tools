@@ -19,4 +19,4 @@ Follow the [docker toolbox guide for mounting and port mapping](https://github.c
 
 * [Docker on windows 10 Home using Docker Toolbox](https://github.com/markcam1/Technical_Guides/blob/master/WebDevelopment/Docker_on_Windows10_home/003_DockerToolbox_Windows.md)
 * [Medium: Docker on Windows 10 Home using Linux VM](https://medium.com/@mbyfieldcameron/docker-on-windows-10-home-edition-c186c538dff3)
-* [Install Docerk toolbox on Windows](https://docs.docker.com/toolbox/toolbox_install_windows/)
+* [Install Docker toolbox on Windows](https://docs.docker.com/toolbox/toolbox_install_windows/)
