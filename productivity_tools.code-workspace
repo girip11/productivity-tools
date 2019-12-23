@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "terminal.integrated.rendererType": "dom",
+    "git.autorefresh": true,
+    "files.insertFinalNewline": true,
+    "markdownlint.ignore": ["**/*.md.html"],
+    "files.associations": {
+      "*.md.html": "markdown"
+    },
+    "shellcheck.run": "onSave",
+    "shellformat.flag": "-i 2 -ci -sr -bn"
+  }
+}
