@@ -6,13 +6,13 @@
 * [beeceptor](https://beeceptor.com/) - Free till some limit.
 * [JSON Placeholder](https://jsonplaceholder.typicode.com/)
 * [REM Rest API](http://rem-rest-api.herokuapp.com/) - uses cookies.
+* [Random user data generation](https://randomuser.me/)
 
 ## Locally running tools
 
 * [Mock Server](http://www.mock-server.com/mock_server/running_mock_server.html)
 * [Postman Mock Server](https://learning.getpostman.com/docs/postman/mock_servers/setting_up_mock/)
-* [MockMoon](https://mockoon.com/) - crossplatform. Open source. CORS support. JSON templating.
-
+* [Mockoon](https://mockoon.com/) - crossplatform. Open source. CORS support. JSON templating.
 
 ## References
 
