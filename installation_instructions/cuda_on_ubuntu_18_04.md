@@ -21,23 +21,31 @@ which nvidia-smi
 nvidia-smi -q
 ```
 
-* Latest nvidia graphics driver for your graphics card can be found using [this article](https://wiki.debian.org/NvidiaGraphicsDrivers#Version_440.82_.28via_buster-backports.29)
+* Latest nvidia graphics driver for your graphics card can be found using [this article](https://wiki.debian.org/NvidiaGraphicsDrivers)
+
+* To list the list of nvidia-drivers currently available we could use the following command.
+
+```Bash
+sudo ubuntu-drivers devices
+```
+
+* From the above list, we could select the recommended driver version or a particular version like `nvidia-driver-450`.
 
 ```Bash
 sudo apt-get update
 # We need to restart the system after installing the driver.
-sudo apt-get install --no-install-recommends nvidia-driver-440
+sudo apt-get install --no-install-recommends nvidia-driver-450
 ```
 
 * After installing the graphics card driver, reboot the system and execute `nvidia-smi` to check if the driver got installed successfully.
+
+* If we get error like **NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.**, then we need to remove the file `blacklist-nvidia.conf` from either `/etc/modprobe.d/` or `/lib/modprobe.d/` folders. This issue is covered [here](https://forums.developer.nvidia.com/t/nvlinked-titan-rtx-chips-nvidia-smi-has-failed-because-it-couldnt-communicate-with-the-nvidia-driver/119328)
 
 ## Checking for Cuda support
 
 * `lspci | grep -i nvidia` - This command prints the graphics card model and name. Check if nvidia provides cuda support for this graphics card model.
 
-* In my case `nvidia-smi` command (with the latest driver version as of writing this article which is version 440) itself printed the latest cuda version that the driver version supported.
-
-**NOTE**: Initially I installed version **nvidia-driver-440**, later the cuda installation updated the driver to **version 450**
+* Using the command `nvidia-smi` we can find the latest cuda version that the installed driver supports
 
 ```text
 $ nvidia-smi
@@ -82,24 +90,24 @@ sudo apt update
 
 # select the cuda version you wanted to install.
 # At the time of writing this article, latest cuda version - 11
-# But I chose to install 10-2
-sudo apt-get install --no-install-recommends cuda-10-2
+# But I chose to install 10-1
+sudo apt-get install --no-install-recommends cuda-toolkit-10-1
 
 sudo apt-get install --no-install-recommends \
     libcudnn7=7.6.4.38-1+cuda10.1  \
     libcudnn7-dev=7.6.4.38-1+cuda10.1
 ```
 
-* If you hit error while installing cuda, refer the troubleshooting section below. After this continue with the installation of **libcudnn**.
+* If you hit error while installing cuda(mostly we won't), refer the troubleshooting section below. After this continue with the installation of **libcudnn**.
 
-* Since cuda installation updated my nvidia driver version from 440 to 450, I had to reboot my system. Before rebooting add the system, add the cuda folder to **PATH**.
+* If cuda installation updates the nvidia driver(mostly it shouldn't), then reboot the system. Before rebooting add the system, add the cuda folder to **PATH**.
 
 ```Bash
 # Following lines should be added to ~/.profile or to ~/.bashrc
 # set PATH for cuda 10.1 installation
-if [ -d "/usr/local/cuda-10.2/bin/" ]; then
-    export PATH=/usr/local/cuda-10.2/bin${PATH:+:${PATH}}
-    export LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+if [ -d "/usr/local/cuda-10.1/bin/" ]; then
+    export PATH=/usr/local/cuda-10.1/bin${PATH:+:${PATH}}
+    export LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 fi
 ```
 
@@ -133,7 +141,7 @@ E: Sub-process /usr/bin/dpkg returned an error code (1)
 sudo apt-get -o Dpkg::Options::="--force-overwrite" install libnvidia-compute-450
 
 # after this command I executed cuda install command to verify if all steps are completed
-sudo apt-get install --no-install-recommends cuda-10-2
+sudo apt-get install --no-install-recommends cuda-toolkit-10-1
 ```
 
 ---
