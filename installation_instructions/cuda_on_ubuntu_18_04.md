@@ -8,6 +8,22 @@
 
 * NVIDIA System Management Interface program, query your GPU using `nvidia-smi` . This command will be available only when the nvidia graphics driver is installed.
 
+## Performing clean installation
+
+```bash
+sudo rm /etc/apt/sources.list.d/cuda*
+sudo apt remove --autoremove nvidia-cuda-toolkit
+sudo apt remove --autoremove nvidia-*
+
+sudo apt-get purge nvidia*
+sudo apt-get autoremove
+sudo apt-get autoclean
+
+sudo rm -rf /usr/local/cuda*
+```
+
+The above steps are from [this article](https://medium.com/@stephengregory_69986/installing-cuda-10-1-on-ubuntu-20-04-e562a5e724a0)
+
 ## Installing nvidia graphics card driver
 
 * We can [install the graphics driver either from **Software and updates**](https://www.cyberciti.biz/faq/ubuntu-linux-install-nvidia-driver-latest-proprietary-driver/) or using **apt**
@@ -34,6 +50,9 @@ sudo ubuntu-drivers devices
 ```Bash
 sudo apt-get update
 # We need to restart the system after installing the driver.
+# with latest nvidia-driver, we get latest versions of cuda toolkit support
+# for instance driver v450 supports upto cuda-11.0 while driver version 455
+# supports cuda version 11.1
 sudo apt-get install --no-install-recommends nvidia-driver-450
 ```
 
@@ -80,10 +99,13 @@ Mon Jul  6 11:43:32 2020
 ```Bash
 sudo add-apt-repository ppa:graphics-drivers
 
+# change to ubuntu2004 on ubuntu 20.04
 sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 
+# change to ubuntu2004 on ubuntu 20.04
 sudo bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list'
 
+# change to ubuntu2004 on ubuntu 20.04
 sudo bash -c 'echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda_learn.list'
 
 sudo apt update
@@ -98,6 +120,8 @@ sudo apt-get install --no-install-recommends \
     libcudnn7-dev=7.6.4.38-1+cuda10.1
 ```
 
+* [cudnn installation](https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html) contains steps to install cudnn v8 on various operating systems.
+
 * If you hit error while installing cuda(mostly we won't), refer the troubleshooting section below. After this continue with the installation of **libcudnn**.
 
 * If cuda installation updates the nvidia driver(mostly it shouldn't), then reboot the system. Before rebooting add the system, add the cuda folder to **PATH**.
@@ -105,9 +129,9 @@ sudo apt-get install --no-install-recommends \
 ```Bash
 # Following lines should be added to ~/.profile or to ~/.bashrc
 # set PATH for cuda 10.1 installation
-if [ -d "/usr/local/cuda-10.1/bin/" ]; then
-    export PATH=/usr/local/cuda-10.1/bin${PATH:+:${PATH}}
-    export LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+if [ -d "/usr/local/cuda/bin/" ]; then
+    export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 fi
 ```
 
@@ -122,6 +146,15 @@ nvcc --version
 
 # libcudnn installation check
 /sbin/ldconfig -N -v $(sed ‘s/:/ /’ <<< $LD_LIBRARY_PATH) 2>/dev/null | grep libcudnn
+```
+
+## Nvidia GPU selection tool
+
+`sudo apt install nvidia-prime` can be installed so that we can use the following commands to switch between builtin graphics and nvidia graphics card.
+
+```bash
+prime-select query
+prime-select nvdia}|intel|on-demand
 ```
 
 ## Troubleshooting cuda installation
