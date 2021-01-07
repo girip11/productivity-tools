@@ -51,7 +51,7 @@ sudo modprobe nvidia_uvm
 
 * So I did `prime-select intel` thinking intel would be my primary GPU. But this made the nvidia GPU unusable. So I have to find a way to use nvidia GPU at the same time using intel GPU for XServer. That is when I found this [nvidia developer thread](https://forums.developer.nvidia.com/t/ubuntu-18-04-headless-390-intel-igpu-after-prime-select-intel-lost-contact-to-geforce-1050ti/66698)
 
-## Solution
+## Solution- Part1
 
 ### Step-1
 
@@ -110,18 +110,64 @@ EndSection
 
 Reboot the system.
 
-## Conclusion
-
 Once I rebooted the system and I ran `nvidia-smi` and the output looks like below ![nvidia-smi after xorg change](./assets/nvidia-smi-output.png)
 
-I was also execute the following commands and verify tensorflow was able to identify GPUs before and after suspending the system.
+I was also execute the following commands and verify tensorflow was able to identify GPUs. But still the problem persists when the computer wakes up after being suspended.
 
 ```Python
 import tensorflow as tf
 tf.config.list_logical_devices(device_type="GPU")
 ```
 
-## Troubleshooting
+## Solution-Part2
+
+* `cuInit error` can be fixed if I am able to unload and reload all nvidia modules. For that I need to avoid getting `nvidia-* module in use` while trying to unload. The following steps will help me achieve this.
+
+### Preferred way
+
+* I found this extremely useful [github gist](https://gist.github.com/girip11/e63bcfe71c859fcbec7b360affdbc3ff)
+* In addition to adding `nogpumanager`, I added the few more kernel parameters. Now the line looks like `GRUB_CMDLINE_LINUX_DEFAULT="nogpumanager i915.modeset=1 quiet splash nomodeset"`. Use the parameters in the same order as they are in this snippet. Then execute `sudo update-grub`.
+
+* Disable the gpu-manager systemd service using the command `sudo systemctl mask gpu-manager.service`. The same can be verified using `sudo systemctl status gpu-manager.service`.
+
+* `sudo apt install bbswitch-dkms` is not already installed.
+
+* Add the following entries to `/etc/modules`
+
+```conf
+#/etc/modules contents
+bbswitch
+i915
+```
+
+* Add the below lines to `/etc/modprobe.d/blacklist.conf`. This is disable loading nouveau drivers in to the kernel at the startup. This can be confirmed by checking `lsmod | grep nouveau` after applying all the changes listed in this section and rebooting.
+
+```conf
+blacklist lbm-nouveau
+alias nouveau off
+alias lbm-nouveau off
+options nouveau modeset=0
+```
+
+* Add the below lines to `/etc/modprobe.d/nvidia-blacklist.conf`. This will prevent the nvidia modules not loaded in to the kernel during startup. The same can be confirmed using `lsmod | grep nvidia`.
+
+```conf
+# Blacklist Nvidia
+blacklist nvidia
+blacklist mvidia-uvm
+blacklist mvidia-drm
+blacklist nvidia-modeset
+```
+
+* Add the line `options bbswitch load_state=1` to `/etc/modprobe.d/bbswitch`. This can be verified by checking `cat /proc/acpi/bbswitch` after reboot.
+
+After making above changes to the directories `/etc/modules` and `/etc/modprobe.d` always execute `sudo update-initramfs -u -k all`. Once this command completes, reboot the system.
+
+After reboot, to load and unload the nvidia modules, we can use those `modprobe` and `rmmod` command respectively.
+
+**NOTE**: Nvidia DRM module is used for rendering only. But here we are trying to use nvidia for purely scientific computation purpose(machine learning) and use the intel graphics for rendering. So `lsmod | grep nvidia` should return results where `nvidia-drm` has count of 0. So that make it easier to unload and load nvidia modules once we hit the **cuda init Unknown error**.
+
+### Hard way
 
 * If the command `sudo rmmod nvidia_drm` fails with the message **module still in use**, execute the following command to verify it. `lsmod | grep nvidia`. It should display `count >= 1` for **nvidia-drm** module.
 
@@ -145,4 +191,4 @@ lsmod | grep nvidia
 systemctl start graphical.target
 ```
 
-* But the drawback with this approach is all the windows/applications get closed. So we should not forget to save our work before executing this command. See if I can find another way to remove the nvidia_drm module.
+* But the drawback with this approach is all the windows/applications get closed. Use this as last resort.
