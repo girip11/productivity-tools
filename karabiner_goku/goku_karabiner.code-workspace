@@ -1,0 +1,51 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.renderWhitespace": "all",
+
+    "[markdown]": {
+      "editor.codeActionsOnSave": {
+        "source.fixAll.markdownlint": true
+      },
+      "editor.wordWrap": "wordWrapColumn",
+      "editor.wrappingIndent": "none"
+    },
+
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.detectIndentation": false,
+    "editor.fontSize": 18,
+    "editor.fontFamily": "Monaco",
+
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontFamily": "Monaco",
+    "git.autorefresh": true,
+    "markdownlint.ignore": ["**/*.md.html"],
+    "files.insertFinalNewline": true,
+    "files.associations": {
+      "*.md.html": "markdown"
+    },
+    "shellcheck.enable": true,
+    "shellcheck.useWorkspaceRootAsCwd": true,
+    "shellcheck.run": "onSave",
+    "shellformat.flag": "-i 2 -ci -sr -bn",
+    "emeraldwalk.runonsave": {
+      "commands": [
+        {
+          "match": "\\.edn$",
+          "cmd": "${workspaceFolder}/runonsave.sh '${file}'",
+          "isAsync": false
+        }
+      ]
+    },
+    "files.watcherExclude": {
+      "**/target": true
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{;; :!Ca is keycode :a and prefix a with !C
+
+ ;; C  | left_command
+ ;; T  | left_control
+ ;; O  | left_option
+ ;; S  | left_shift
+ ;; F  | fn
+ ;; Q  | right_command
+ ;; W  | right_control
+ ;; E  | right_option
+ ;; R  | right_shift
+ ;; P  | caps_lock
+ ;; !! | command + control + optional + shift (hyper)
+
+ ;; code for all this:
+ ;; https://github.com/yqrashawn/GokuRakuJoudo/blob/b9b334a187379f9bc8182ad59e2cca2a1789e9c0/src/karabiner_configurator/keys.clj#L68
+
+ ;; FROM modifiers
+ ;; to understand better how modifiers work in karabiner
+ ;; karabiner definition of mandatory and optional
+ ;; https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/
+
+ ;;    | no modifier
+ ;;                  input key maps to output key exactly
+ ;;                  adding any modifier will cancel the event
+
+ ;; !  | mandatory
+ ;;                  specified modifier is removed in output (to event)
+ ;;                  specified modifiers must be present for event to occur
+ ;;                  adding any other modifier will cancel the event
+
+ ;; #  | optional (single)
+ ;;                  specified modifier is kept in output (to event)
+ ;;                  one (or none) of the specified modifiers must be present
+ ;;                  adding any other modifier will cancel the event
+
+ ;; ## | optional any
+ ;;                  specified modifier is removed in output (to event)
+ ;;                  specified modifiers *must* be present for event to occur
+ ;;                  adding any other modifier will add to output event
+ ;;                  (what you typically expect, additional modifiers tacked on)
+ ;;
+ ;; need to prefix C T O S F with ! or #
+ ;;
+
+
+ ;; NOTE: I have swapped option and command keys.
+ :profiles {:Default {:default true
+
+                      :sim     50     ; simultaneous_threshold_milliseconds (def: 50)
+                      ;; if keydown event for two different keys are pressed within :sim ms, the keypresses are considered simultaneous
+                      :delay   150    ; to_delayed_action_delay_milliseconds (def: 500)
+                      ;; after :delay ms, the key press is considered to be delayed (used for double-press macros)
+                      :alone   500    ; to_if_alone_timeout_milliseconds (def: 1000)
+                      ;; if keyup event comes within :alone ms from keydown, the key is not just pressed but held
+                      :held    500    ; to_if_held_down_threshold_milliseconds (def: 500)
+                      ;; key is fired twice when :held ms is elapsed (otherwise seen as a hold command) (TODO WHAT IS THIS??)
+                      }};; profiles
+
+ :applications {:browsers ["^org\\.mozilla\\.firefox$"; Firefox
+                           "^com\\.google\\.Chrome$" ; Google chrome
+                           "^org\\.chromium\\.Chromium$" ; Chromium
+                           "^com\\.apple\\.Safari$"; Safari
+                           ]
+                :firefox  ["^org\\.mozilla\\.firefox$"; Firefox
+                           ]
+                :safari  ["^com\\.apple\\.Safari$"; Safari
+                          ]
+                :chrome  ["^com\\.google\\.Chrome$" ; Google chrome
+                          "^org\\.chromium\\.Chromium$" ; Chromium
+                          ]
+                :skimpdf ["^net\\.sourceforge\\.skim-app\\.skim$"]
+                :terminals
+                ["^com\\.apple\\.Terminal$" ; Apple terminal
+                 "^com\\.googlecode\\.iterm2$" ; ITerm
+                 "^co\\.zeit\\.hyperterm$" ; Hyperterm terminal
+                 "^co\\.zeit\\.hyper$" ; Hyper terminal
+                 "^io\\.alacritty$" ; Alacritty terminal
+                 "^net\\.kovidgoyal\\.kitty$" ; Kitty terminal
+                 "^org\\.gnu\\.Emacs$" ; Emacs
+                 "^org\\.gnu\\.AquamacsEmacs$" ; Emacs
+                 "^org\\.gnu\\.Aquamacs$" ; Aquamacs
+                 "^com\\.github\\.wez\\.wezterm$" ; Wezterm
+                 ]
+                :IDEs
+                ["^com\\.microsoft\\.VSCode$"; VSCode
+                 "^com.\\.jetbrains\\.pycharm\\.ce$"; pycharm
+                 "^com.\\.jetbrains\\.intellij\\.ce$"; intelliJ
+                 "^com\\.sublimetext\\.4$" ; sublimetext
+                 ]}
+ :main [;; Keyboard shortcuts
+        {:des "Mission control Mapping"
+         :rules [[:!Cgrave_accent_and_tilde :!Ograve_accent_and_tilde]; switch windows of same application
+                 ]}
+
+        {:des "Remapping Skim PDF reader controls"
+         :rules [[:!Th :!TOh [:skimpdf]]; Highlight
+                 ]}
+
+        {:des "Miro Window Manager Movement Shortcuts"
+         :rules [[:!Cleft_arrow :!CTOleft_arrow]; move to left
+                 [:!Cright_arrow :!CTOright_arrow]; move to right
+                 [:!Cup_arrow :!CTOup_arrow]; move to up
+                 [:!Cdown_arrow :!CTOdown_arrow]; move to down
+                 ]}
+
+        {:des "Cut, Copy, Paste, Undo, Redo, Save, Find"
+         :rules [[:!Ta :!Oa [:!IDEs]] ; Ctrl + c to Cmd + c
+                 [:!Tc :!Oc [:!terminals :!IDEs]] ; Ctrl + c to Cmd + c
+                 [:!Tx :!Ox [:!terminals :!IDEs]] ; Ctrl + x to Cmd + x
+                 [:!Tv :!Ov [:!terminals :!IDEs]] ; Ctrl + v to Cmd + v
+                 [:!Tz :!Oz [:!terminals :!IDEs]] ; Ctrl + z to Cmd + z
+                 [:!Ty :!Oy [:!terminals :!IDEs :!browsers]] ; Ctrl + z to Cmd + r
+                 [:!Ts :!Os [:!terminals :!IDEs]] ; Ctrl +s to Cmd + s
+                 [:!Tf :!Of [:!terminals :!IDEs]] ; Ctrl+ f to Cmd + f
+                 ]}
+        {:des "Browser  navigation and page controls"
+         ;; For chrome, I have used shortcuts extension to configure custom shortcuts
+         :rules [[:!TSz :!OSz [:firefox]] ; Redo
+                 [:!Tp :!Op [:browsers]] ; print
+                 [:!Ti :!Oi [:firefox]] ; View Information
+                 [:!Tu :!Ou [:firefox]] ; View source
+                 [:!Tt :!Ot [:firefox]] ; Open new tab
+                 [:!TSt :!OSt [:firefox]] ; Open previously closed tab
+                 [:!Tn :!On [:firefox]] ; Open a new window
+                 [:!TSn :!OSp [:firefox]] ; Open new incognito tab
+                 [:!TSn :!OSn [:safari]] ; Open new incognito tab
+                 [:!Tr :!Or [:firefox]] ; reload
+                 [:!TSh :!OSh [:firefox]] ; open history
+                 [:!TSr :!OSr [:firefox]] ; force reload
+                 ]};; Browser page controls
+        ];; main end
+ }

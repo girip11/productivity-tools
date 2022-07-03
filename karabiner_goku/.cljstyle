@@ -1,0 +1,13 @@
+{
+    :files
+    { 
+        :extensions #{"edn" "cljc" "cljs" "clj" "cljx"}, :ignore #{".hg" ".git"}
+    }
+    :rules
+    { :namespaces
+        {
+            :indent-size 4
+        }
+    }
+    :remove-multiple-non-indenting-spaces? true
+    :split-keypairs-over-multiple-lines? true}
