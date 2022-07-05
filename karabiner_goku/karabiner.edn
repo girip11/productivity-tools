@@ -90,12 +90,12 @@
                  ]}
  :main [;; Keyboard shortcuts
         {:des "Mission control Mapping"
-         :rules [[:!Cgrave_accent_and_tilde :!Ograve_accent_and_tilde]; switch windows of same application
-                 [:!Cl :!TOq] ; lock desktop
+         :rules [[:!Cl :!TOq] ; lock desktop
                  ]}
 
         {:des "General controls"
          :rules [[:!S3 :!Q3]; shift + 3 to #
+                 [:!Cgrave_accent_and_tilde :!Ctab]; Switch windows of same application
                  ]}
 
         {:des "Remapping Skim PDF reader controls"
