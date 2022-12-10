@@ -91,6 +91,10 @@
  :main [;; Keyboard shortcuts
         {:des "Mission control Mapping"
          :rules [[:!Cl :!TOq] ; lock desktop
+                 [:!ST3 :!SO3] ; print entire screen
+                 [:!ST4 :!SO4] ; print screen region
+                 [:!Sprint_screen :!SO3] ; print entire screen
+                 [:print_screen :!SO4] ; print screen region
                  ]}
 
         {:des "General controls"
